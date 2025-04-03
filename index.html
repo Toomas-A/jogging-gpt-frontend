@@ -4,98 +4,88 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogging GPT — Подбор кроссовок</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
-      font-family: sans-serif;
-      background: #f8f8f8;
-      padding: 20px;
-      max-width: 800px;
+      background-color: #f4f4f4;
+      padding-top: 40px;
+    }
+    .form-container {
+      max-width: 700px;
       margin: auto;
-    }
-    h1 {
-      font-size: 2em;
-      text-align: center;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-top: 20px;
-    }
-    select, input[type="text"], textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      margin-top: 30px;
-      padding: 12px 20px;
-      font-size: 16px;
-      background: #2e7dff;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h1>🏃‍♂️ Jogging GPT — Подбор кроссовок</h1>
-  <form id="quiz-form"></form>
+  <div class="container form-container">
+    <h1 class="mb-4 text-center">👟 Jogging GPT — Подбор кроссовок</h1>
+    <form id="questionnaire">
+      <div class="mb-3">
+        <label for="q0" class="form-label">0. Ваш пол:</label>
+        <select class="form-select" id="q0" name="q0">
+          <option value="1">Мужской</option>
+          <option value="2">Женский</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="q1" class="form-label">1. Какой бренд используете сейчас?</label>
+        <select class="form-select" id="q1" name="q1">
+          <option value="1">Nike</option>
+          <option value="2">Asics</option>
+          <option value="3">Brooks</option>
+          <option value="4">Hoka</option>
+          <option value="5">Saucony</option>
+          <option value="6">Adidas</option>
+          <option value="7">Other</option>
+          <option value="8">Не знаю</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="q2" class="form-label">2. Нравится ли вам эта пара?</label>
+        <select class="form-select" id="q2" name="q2">
+          <option value="1">Да</option>
+          <option value="2">Есть проблемы</option>
+          <option value="3">Нет</option>
+          <option value="4">N/A</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="q3" class="form-label">3. Что вам не нравится?</label>
+        <input type="text" class="form-control" id="q3" name="q3" placeholder="Например: жмут, жесткие, быстро износились...">
+      </div>
+      <div class="mb-3">
+        <label for="q7" class="form-label">7. Ваша цель:</label>
+        <select class="form-select" id="q7" name="q7">
+          <option value="1">Прогулки</option>
+          <option value="2">Длинные дистанции</option>
+          <option value="3">Соревнования</option>
+          <option value="4">Трейл</option>
+          <option value="5">Смешанное</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="q16" class="form-label">16. Бюджет:</label>
+        <select class="form-select" id="q16" name="q16">
+          <option value="1">до $100</option>
+          <option value="2">$100–150</option>
+          <option value="3">$150–200</option>
+          <option value="4">Больше $200</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Подобрать кроссовки</button>
+    </form>
+  </div>
 
   <script>
-    const questions = [
-      { id: 0, text: "Ваш пол:", type: "select", options: ["Мужской", "Женский"] },
-      { id: 1, text: "Какой бренд используете сейчас?", type: "select", options: ["Nike", "Asics", "Brooks", "Hoka", "Saucony", "Adidas", "Другой", "Не знаю"] },
-      { id: 2, text: "Нравится ли вам эта пара?", type: "select", options: ["Да", "Есть проблемы", "Нет", "N/A"] },
-      { id: 3, text: "Что вам не нравится?", type: "text" },
-      { id: 4, text: "Предпочтительные бренды:", type: "text" },
-      { id: 5, text: "Сезон:", type: "select", options: ["Теплый/Сухой", "Зима", "Всесезонный"] },
-      { id: 6, text: "Нужна водостойкость?", type: "select", options: ["Да", "Нет", "Не уверен"] },
-      { id: 7, text: "Ваша цель:", type: "select", options: ["Прогулки", "Длительные пробежки", "Соревнования", "Трейл", "Смешанное"] },
-      { id: 8, text: "Как часто и сколько бегаете?", type: "select", options: ["1–2×/нед (1–8 км)", "3–4×/нед (8–16 км)", "5+×/нед (16+ км)", "Нерегулярно"] },
-      { id: 9, text: "Где вы бегаете?", type: "text" },
-      { id: 10, text: "Тип стопы/пронация:", type: "select", options: ["Нейтральная", "Гиперпронация", "Супинация", "Не знаю"] },
-      { id: 11, text: "Ширина стопы:", type: "select", options: ["Узкая", "Средняя", "Широкая", "Не знаю"] },
-      { id: 12, text: "Проблемы с ногами?", type: "text" },
-      { id: 13, text: "Предпочтение по амортизации:", type: "select", options: ["Минимум", "Умеренная", "Максимальная", "Без разницы"] },
-      { id: 14, text: "Важно ли: легкость или износостойкость?", type: "select", options: ["Легкие", "Износостойкие", "И то, и другое", "Без разницы"] },
-      { id: 15, text: "Доп. пожелания (цвет, экология и т.д.):", type: "text" },
-      { id: 16, text: "Бюджет:", type: "select", options: ["до $100", "$100–$150", "$150–$200", "Больше $200"] },
-    ];
-
-    const form = document.getElementById("quiz-form");
-    questions.forEach(q => {
-      const label = document.createElement("label");
-      label.textContent = `${q.id}. ${q.text}`;
-      form.appendChild(label);
-
-      let input;
-      if (q.type === "select") {
-        input = document.createElement("select");
-        q.options.forEach(opt => {
-          const option = document.createElement("option");
-          option.value = opt;
-          option.textContent = opt;
-          input.appendChild(option);
-        });
-      } else if (q.type === "text") {
-        input = document.createElement("input");
-        input.type = "text";
-        input.placeholder = "Введите текст...";
-      }
-      input.name = `q_${q.id}`;
-      form.appendChild(input);
-    });
-
-    const button = document.createElement("button");
-    button.textContent = "Подобрать кроссовки";
-    button.type = "submit";
-    form.appendChild(button);
+    const form = document.getElementById("questionnaire");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+
       const formData = new FormData(form);
       const data = {};
       formData.forEach((value, key) => {
@@ -103,15 +93,20 @@
       });
 
       try {
-        const res = await fetch("https://jogging-gpt-backend.onrender.com/gpt", {
+        const res = await fetch("https://jogging-gpt-backend.onrender.com/generate", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt: JSON.stringify(data) })
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
         });
 
-        const json = await res.json();
-        const parsed = JSON.parse(json.response);
-        localStorage.setItem("shoeResults", JSON.stringify(parsed));
+        if (!res.ok) {
+          throw new Error("Сервер вернул ошибку");
+        }
+
+        const result = await res.json();
+        localStorage.setItem("shoeResults", JSON.stringify(result));
         window.location.href = "results.html";
       } catch (err) {
         alert("Произошла ошибка при обращении к серверу: " + err.message);
