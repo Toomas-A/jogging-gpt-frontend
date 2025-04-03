@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jogging GPT — Подбор кроссовок</title>
   <style>
     body {
@@ -83,8 +84,6 @@
         input = document.createElement("input");
         input.type = "text";
         input.placeholder = "Введите текст...";
-      } else if (q.type === "textarea") {
-        input = document.createElement("textarea");
       }
       input.name = `q_${q.id}`;
       form.appendChild(input);
@@ -94,6 +93,30 @@
     button.textContent = "Подобрать кроссовки";
     button.type = "submit";
     form.appendChild(button);
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = value;
+      });
+
+      try {
+        const res = await fetch("https://jogging-gpt-backend.onrender.com/gpt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: JSON.stringify(data) })
+        });
+
+        const json = await res.json();
+        const parsed = JSON.parse(json.response);
+        localStorage.setItem("shoeResults", JSON.stringify(parsed));
+        window.location.href = "results.html";
+      } catch (err) {
+        alert("Произошла ошибка при обращении к серверу: " + err.message);
+      }
+    });
   </script>
 </body>
 </html>
