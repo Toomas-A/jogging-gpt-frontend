@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
@@ -27,34 +27,33 @@
   </div>
 
   <script>
-    // Пример: получаем JSON из локального хранилища
-    const shoes = JSON.parse(localStorage.getItem('shoeResults')) || [];
-    const container = document.getElementById('results');
+    const raw = localStorage.getItem("shoeResults");
+    const container = document.getElementById("results");
 
-    if (!Array.isArray(shoes) || shoes.length === 0) {
+    if (!raw) {
       container.innerHTML = '<p class="text-center text-muted">Нет данных для отображения.</p>';
     } else {
-      shoes.forEach(shoe => {
-        const card = document.createElement('div');
-        card.className = 'col-md-6 col-lg-4';
-        card.innerHTML = `
-          <div class="card shoe-card">
-            <img src="${shoe.images?.[0] || 'https://via.placeholder.com/300x180'}" class="card-img-top shoe-img" alt="${shoe.brand} ${shoe.model}">
-            <div class="card-body">
-              <h5 class="card-title">${shoe.brand} ${shoe.model} (${shoe.year})</h5>
-              <p class="card-text">${shoe.features}</p>
-              <p><strong>Цена:</strong> ${shoe.averagePrice}</p>
-              <p><strong>Оценки:</strong><br>
-                RunRepeat: ${shoe.reviewScores?.RunRepeat ?? '-'}<br>
-                BelieveInTheRun: ${shoe.reviewScores?.['BelieveInTheRun'] ?? '-'}<br>
-                Runner's World: ${shoe.reviewScores?.["Runner's World"] ?? '-'}
-              </p>
-              <a href="#" class="btn btn-primary">Подробнее</a>
+      try {
+        const parsed = JSON.parse(raw);
+
+        if (parsed.error) {
+          container.innerHTML = `<p class="text-danger text-center">Ошибка: ${parsed.error}</p>`;
+        } else if (typeof parsed.response === "string") {
+          // GPT вернул просто текст
+          container.innerHTML = `
+            <div class="col-12">
+              <div class="alert alert-light shadow-sm">
+                <pre style="white-space: pre-wrap">${parsed.response}</pre>
+              </div>
             </div>
-          </div>
-        `;
-        container.appendChild(card);
-      });
+          `;
+        } else {
+          container.innerHTML = `<p class="text-muted text-center">Неподдерживаемый формат ответа от сервера.</p>`;
+        }
+
+      } catch (err) {
+        container.innerHTML = '<p class="text-danger">Ошибка при обработке данных: ' + err.message + '</p>';
+      }
     }
   </script>
 </body>
