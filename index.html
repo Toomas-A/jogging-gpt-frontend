@@ -92,7 +92,7 @@
         data[key] = value;
       });
 
-      console.log("Отправляемые данные:", data);
+      console.log("📤 Отправляем на сервер:", JSON.stringify({ prompt: JSON.stringify(data) }));
       
       try {
         const res = await fetch("https://jogging-gpt-backend.onrender.com/gpt", {
