@@ -92,6 +92,8 @@
         data[key] = value;
       });
 
+      console.log("Отправляемые данные:", data);
+      
       try {
         const res = await fetch("https://jogging-gpt-backend.onrender.com/gpt", {
           method: "POST",
