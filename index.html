@@ -100,7 +100,7 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify({ prompt: data })
         });
 
         if (!res.ok) {
