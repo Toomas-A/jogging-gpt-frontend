@@ -100,7 +100,21 @@
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ prompt: data })
+          const promptText = `
+  0. Пол: ${data.q0}
+  1. Бренд: ${data.q1}
+  2. Нравится: ${data.q2}
+  3. Не нравится: ${data.q3}
+  7. Цель: ${data.q7}
+  16. Бюджет: ${data.q16}
+`;
+
+const res = await fetch("https://jogging-gpt-backend.onrender.com/gpt", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt: promptText })
+});
+
         });
 
         if (!res.ok) {
